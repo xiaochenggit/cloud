@@ -1,16 +1,34 @@
-<!--pages/user/index/index.wxml-->
-<view class="user public-padding">
-    <view class="user-avatar">
-        <view class="user-login" wx:if="{{!avatarUrl}}">
-          <view>登录后查看学员数据</view>
-          <button  open-type="getUserInfo" bindgetuserinfo="onGetUserInfo"> 登录 </button>
-        </view>
-        <view wx:else class="user-avatar-box">
-          <image src="{{avatarUrl}}"></image>
-          <view class="user-name">{{userInfo.nickName}}</view>
-        </view>
+<!-- pages/user/index/index.wxml -->
+<view class="user">
+  <view class="user-avatar">
+    <view class="user-login" wx:if="{{!avatarUrl}}">
+      <i-button bind:getuserinfo="onGetUserInfo" open-type="getUserInfo">登录</i-button>
     </view>
-    <view>
-      <view bindtap="linkTo" data-url="/pages/user/todolist/todolist">todolist</view>
+    <view wx:else class="user-avatar-box">
+      <i-avatar src="{{avatarUrl}}" shape="circle" size="jularge"></i-avatar>
+      <view class="user-name">{{userInfo.nickName}}</view>
     </view>
+  </view>
+  <view>
+    <i-grid>
+      <i-grid-item bindtap="linkTo" data-url="/pages/user/todolist/todolist">
+        <i-grid-icon>
+          <i-icon type="activity_fill" size="30" />
+        </i-grid-icon>
+        <i-grid-label>待办事项</i-grid-label>
+      </i-grid-item>
+      <i-grid-item bindtap="linkTo" data-url="/pages/user/todolist/todolist">
+        <i-grid-icon>
+          <i-icon type="activity_fill" size="30" />
+        </i-grid-icon>
+        <i-grid-label>待办事项</i-grid-label>
+      </i-grid-item>
+      <i-grid-item bindtap="linkTo" data-url="/pages/user/todolist/todolist">
+        <i-grid-icon>
+          <i-icon type="activity_fill" size="30" />
+        </i-grid-icon>
+        <i-grid-label>待办事项</i-grid-label>
+      </i-grid-item>
+    </i-grid>
+  </view>
 </view>
