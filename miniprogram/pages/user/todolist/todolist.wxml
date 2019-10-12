@@ -1,13 +1,29 @@
-<!--pages/user/todolist/todolist.wxml-->
+<!-- pages/user/todolist/todolist.wxml -->
 <view class="todolist public-padding">
-    <view class="create-todo">
-        <view wx:if='{{!isEdit}}' bind:tap="edit">新建任务</view>
-        <view wx:else class="edit">
-            <view class="edit-title">
-                <view class="edit-btn" bind:tap='cancalEdit'>取消</view>
-                <view class="edit-btn" bind:tap="add">保存</view>
-            </view>
-            <input placeholder="请输入任务描述" value="{{todo.description}}" bindinput='editDescription' auto-focus/>
-        </view>
+  <view class="create-todo">
+    <view wx:if='{{!isEdit}}' bind:tap="toggleEdit">
+      <i-icon type="add" />
+      新建任务
     </view>
+    <i-drawer mode="right" visible="{{isEdit}}" bind:close="toggleEdit">
+      <view class="demo-container">
+        <view class="edit-title">
+          <text class="edit-btn" bind:tap='toggleEdit'>取消</text>
+          <text class="edit-btn" bind:tap="add">保存</text>
+        </view>
+        <i-panel title="任务描述：">
+          <i-input value="{{todo.description}}" placeholder="请输入任务描述" bind:change='editDescription' maxlength="50" autofocus />
+        </i-panel>
+        <i-panel title="任务类型：">
+          <view class="todo-types flex">
+            <view class="todo-type-item {{item.value}}" wx:for='{{typeOptions}}' wx:key="{{index}}" bind:tap="changeTodoType" data-type='{{item.value}}'>
+              <view class="{{todo.type === item.value ? 'active' : ''}}"></view>
+              {{todo.type === item.value ? item.name : ''}}
+            </view>
+          </view>
+        </i-panel>
+      </view>
+    </i-drawer>
+  </view>
 </view>
+<i-message id="message" />

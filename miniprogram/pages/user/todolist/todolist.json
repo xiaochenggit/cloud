@@ -1,4 +1,11 @@
 {
-  "usingComponents": {},
-  "navigationBarTitleText": "待办事项"
+  "usingComponents": {
+    "i-drawer": "../../../dist/drawer/index",
+    "i-icon": "../../../dist/icon/index",
+    "i-input": "../../../dist/input/index",
+    "i-panel": "../../../dist/panel/index",
+    "i-message": "../../../dist/message/index"
+  },
+  "navigationBarTitleText": "待办事项",
+  "navigationBarBackgroundColor": "#FFFFFF"
 }

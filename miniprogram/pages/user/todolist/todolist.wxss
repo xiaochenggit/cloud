@@ -1,1 +1,75 @@
 /* pages/user/todolist/todolist.wxss */
+.demo-container {
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+}
+.edit-title {
+    text-align: right;
+    line-height: 1.5;
+}
+.edit-title text:last-child {
+    color: #00C0EE;
+    margin: 0 30rpx;
+}
+.todo-types {
+    padding: 0 15px;
+    box-sizing: border-box;
+}
+.todo-type-item {
+    line-height: 60rpx;
+    font-size: 24rpx;
+    padding: 10rpx 0;
+}
+.todo-type-item.important-critical view {
+    border-color: #de6034;
+}
+.todo-type-item.important-critical view.active::after {
+    background-color: #de6034;
+}
+.todo-type-item.important-noCritical view {
+    border-color: #fdcf64;
+}
+.todo-type-item.important-noCritical view.active::after {
+    background-color: #fdcf64;
+}
+
+.todo-type-item.noImportant-critical view {
+    border-color: #9dd7fd;
+}
+.todo-type-item.noImportant-critical view.active::after {
+    background-color: #9dd7fd;
+}
+.todo-type-item.noImportant-noCritical view {
+    border-color: #bfe390;
+}
+.todo-type-item.noImportant-noCritical view.active::after {
+    background-color: #bfe390;
+}
+.todo-type-item + .todo-type-item {
+    margin-left: 10rpx;
+}
+.todo-type-item view {
+    display: inline-block;
+    width: 32rpx;
+    height: 32rpx;
+    border-radius: 50%;
+    border: 2rpx solid #ccc;
+    margin-right: 10rpx;
+    vertical-align: top;
+    margin-top: 15rpx;
+    position: relative;
+    box-sizing: border-box;
+}
+.todo-type-item view.active::after {
+    content: '';
+    position: absolute;
+    display: inline-block;
+    width: 15rpx;
+    height: 15rpx;
+    border-radius: 50%;
+    background-color: #ccc;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

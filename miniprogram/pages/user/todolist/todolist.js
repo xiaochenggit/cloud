@@ -1,4 +1,5 @@
 // pages/user/todolist/todolist.js
+const { $Message } = require('../../../dist/base/index');
 Page({
 
   /**
@@ -18,7 +19,20 @@ Page({
       ],
       location: '',
       done: false
-    }
+    },
+    typeOptions: [{
+      name: '很重要-很紧急',
+      value: 'important-critical'
+    }, {
+      name: '重要-不紧急',
+      value: 'important-noCritical'
+    }, {
+      name: '不重要-紧急',
+      value: 'noImportant-critical'
+    }, {
+      name: '不重要-不紧急',
+      value: 'noImportant-noCritical'
+    }],
   },
 
   /**
@@ -79,13 +93,27 @@ Page({
   add() {
     const db = wx.cloud.database()
     const { todo } = this.data
-    const { description } = todo
+    const { description, type } = todo
+    if (!description) {
+      $Message({
+          content: '请输入任务描述!',
+          type: 'warning'
+      });
+      return false
+    }
+    if (!type) {
+      $Message({
+          content: '请选择任务类型!',
+          type: 'warning'
+      });
+      return false
+    }
     db.collection('todolist').add({
       data: {
         description,
         startTime:  new Date("2018-09-01"),
         endTime: new Date("2018-09-01"),
-        type: 'important',
+        type,
         progress: 0,
         tags: [
           "common",
@@ -114,23 +142,28 @@ Page({
       }
     })
   },
-  edit() {
+  toggleEdit() {
     this.setData({
-      isEdit: true
-    })
-  },
-  cancalEdit() {
-    this.setData({
-      isEdit: false
+      isEdit: !this.data.isEdit
     })
   },
   editDescription(e) {
+    e = e.detail
     const { todo } = this.data
     this.setData({
       todo: {
         ...todo,
         description: e.detail.value
       }
+    })
+  },
+  // 改变任务类型
+  changeTodoType(e) {
+    const { todo } = this.data
+    const { type } = e.currentTarget.dataset
+    todo.type = type
+    this.setData({
+      todo
     })
   }
 })

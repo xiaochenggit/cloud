@@ -1,6 +1,6 @@
 /**app.wxss**/
 page {
-  font-size: 30rpx;
+  font-size: 28rpx;
 }
 .container {
   display: flex;
@@ -160,4 +160,7 @@ page {
 
 .public-padding {
   padding: 0 30rpx;
+}
+.flex {
+  display: flex;
 }
