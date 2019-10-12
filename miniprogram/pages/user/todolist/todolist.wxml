@@ -1,0 +1,13 @@
+<!--pages/user/todolist/todolist.wxml-->
+<view class="todolist public-padding">
+    <view class="create-todo">
+        <view wx:if='{{!isEdit}}' bind:tap="edit">新建任务</view>
+        <view wx:else class="edit">
+            <view class="edit-title">
+                <view class="edit-btn" bind:tap='cancalEdit'>取消</view>
+                <view class="edit-btn" bind:tap="add">保存</view>
+            </view>
+            <input placeholder="请输入任务描述" value="{{todo.description}}" bindinput='editDescription' auto-focus/>
+        </view>
+    </view>
+</view>

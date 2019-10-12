@@ -1,4 +1,7 @@
 /**app.wxss**/
+page {
+  font-size: 30rpx;
+}
 .container {
   display: flex;
   flex-direction: column;
@@ -153,4 +156,8 @@ page {
   font-size: 24rpx;
   line-height: 36rpx;
   word-break: break-all;
+}
+
+.public-padding {
+  padding: 0 30rpx;
 }

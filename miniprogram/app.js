@@ -16,5 +16,10 @@ App({
     }
 
     this.globalData = {}
+  },
+  linkTo(url, type = 'navigateTo') {
+    wx[type]({
+      url
+    })
   }
 })
