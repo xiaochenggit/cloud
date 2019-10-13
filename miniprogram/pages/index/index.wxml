@@ -53,6 +53,10 @@
       <text>云调用</text>
     </navigator>
   </view>
-
+<view class="uploader">
+    <navigator url="../user/index/index" open-type="navigate" class="uploader-text">
+      <text>我的</text>
+    </navigator>
+  </view>
 
 </view>
