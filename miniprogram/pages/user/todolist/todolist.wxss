@@ -1,4 +1,8 @@
 /* pages/user/todolist/todolist.wxss */
+.todolist {
+    min-height: 100%;
+    background-color: #fff;
+}
 .demo-container {
     width: 100vw;
     height: 100vh;
@@ -11,6 +15,18 @@
 .edit-title text:last-child {
     color: #00C0EE;
     margin: 0 30rpx;
+}
+.description.important-critical {
+    background-color: #de6034;
+}
+.description.important-noCritical {
+    background-color: #fdcf64;
+}
+.description.noImportant-critical {
+    background-color: #9dd7fd;
+}
+.description.noImportant-noCritical {
+    background-color: #bfe390;
 }
 .todo-types {
     padding: 0 15px;
@@ -72,4 +88,24 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+.date-view {
+    box-sizing: border-box;
+    padding: 10px 15px;
+}
+.date-view > view {
+    padding: 0 10px;
+}
+.date-view .i-icon {
+    margin-right: 10px;
+}
+.progress {
+    padding: 12px 15px;
+}
+.progress .icon-jian {
+    margin-right: 25px;
+}
+.progress-box {
+    flex: 1;
+    margin-top: -4px;
 }

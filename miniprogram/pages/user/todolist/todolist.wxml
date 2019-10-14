@@ -1,20 +1,18 @@
 <!-- pages/user/todolist/todolist.wxml -->
-<view class="todolist public-padding">
+<view class="todolist">
   <view class="create-todo">
-    <view wx:if='{{!isEdit}}' bind:tap="toggleEdit">
+    <i-button wx:if='{{!isEdit}}' bind:click="toggleEdit" type="success">
       <i-icon type="add" />
-      新建任务
-    </view>
+      新建待办
+    </i-button>
     <i-drawer mode="right" visible="{{isEdit}}" bind:close="toggleEdit">
       <view class="demo-container">
-        <view class="edit-title">
-          <text class="edit-btn" bind:tap='toggleEdit'>取消</text>
-          <text class="edit-btn" bind:tap="add">保存</text>
-        </view>
-        <i-panel title="任务描述：">
-          <i-input value="{{todo.description}}" placeholder="请输入任务描述" bind:change='editDescription' maxlength="50" autofocus />
+        <i-panel title="事件描述：">
+          <view class="description {{todo.type}}">
+            <i-input value="{{todo.description}}" placeholder="请输入事件描述" bind:change='editDescription' maxlength="50" autofocus />
+          </view>
         </i-panel>
-        <i-panel title="任务类型：">
+        <i-panel title="事件类型：">
           <view class="todo-types flex">
             <view class="todo-type-item {{item.value}}" wx:for='{{typeOptions}}' wx:key="{{index}}" bind:tap="changeTodoType" data-type='{{item.value}}'>
               <view class="{{todo.type === item.value ? 'active' : ''}}"></view>
@@ -22,6 +20,35 @@
             </view>
           </view>
         </i-panel>
+        <i-panel title="完成时间：">
+          <view class="date-view flex">
+            <i-icon style="margin-right:5px; vertical-align: top;" type="time" size="20" />
+            <picker style="margin-right:5px;" mode="date" value="{{todo.startDate}}" start="{{minStartDate}}" bindchange="timeChange" data-type='startDate'>
+              <view class="picker">{{todo.startDate}}</view>
+            </picker>
+            <picker mode="time" value="{{todo.startTime}}" start="{{todo.startDate === minStartDate ? minStartTime : '00:00'}}" end="23:59" bindchange="timeChange" data-type='startTime'>
+              <view class="picker">{{todo.startTime}}</view>
+            </picker>
+            <!-- <view>-</view>
+            <picker style="margin-right:5px;" mode="date" value="{{todo.endDate}}" start="{{startDate}}" bindchange="timeChange" data-type='endDate'>
+              <view class="picker">{{todo.endDate}}</view>
+            </picker>
+            <picker mode="time" value="{{todo.endTime}}" start="{{todo.endDate === todo.startDate ? todo.startTime : '00:00'}}" end="23:59" bindchange="timeChange" data-type='endTime'>
+              <view class="picker">{{todo.endTime}}</view>
+            </picker> -->
+          </view>
+        </i-panel>
+        <i-panel title="完成进度：">
+          <view class="progress flex">
+            <view class="icon-jian iconfont" bind:tap="progressChange" data-type='reduce'></view>
+            <view class="progress-box">
+              <i-progress percent="{{ todo.progress }}" status="{{ status }}"></i-progress>
+            </view>
+            <view class="icon-jia iconfont" bind:tap="progressChange" data-type='add'></view>
+          </view>
+        </i-panel>
+        <i-button bind:click="toggleEdit">取消</i-button>
+        <i-button bind:click="add" type="primary">保存</i-button>
       </view>
     </i-drawer>
   </view>

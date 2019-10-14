@@ -1,6 +1,8 @@
 /**app.wxss**/
+@import "./font/font.wxss";
 page {
   font-size: 28rpx;
+  height: 100%;
 }
 .container {
   display: flex;

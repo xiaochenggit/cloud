@@ -1,16 +1,21 @@
 // pages/user/todolist/todolist.js
 const { $Message } = require('../../../dist/base/index');
+const util = require('../../../util/utils.js');
+const api = require ('./api.js');
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    isEdit: true,
-    todo: { // 任务默认属性
+    isEdit: false,
+    todo: {},
+    resetTodo: { // 任务默认属性
       description: '',  // 任务描述
-      startTime: '', // 开始时间
-      endTime: '', // 结束时间
+      startDate: '',
+      startTime: '',
+      endDate: '',
+      endTime: '23:59',
       type: '', // 事件类型
       progress: 0, // 完成进度
       tags: [
@@ -18,9 +23,9 @@ Page({
         "private",
       ],
       location: '',
-      done: false
+      done: false,
     },
-    typeOptions: [{
+    typeOptions: [{ // 任务类型配置
       name: '很重要-很紧急',
       value: 'important-critical'
     }, {
@@ -33,13 +38,17 @@ Page({
       name: '不重要-不紧急',
       value: 'noImportant-noCritical'
     }],
+    minStartDate: '2019-01-01', // 最小日期限制
+    minStartTime: '00:00', // 最小时间限制
+    status: 'wrong', // 进度条初始化状态
+    progressUnit: 10 // 进度条每次变化值
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-
+    
   },
 
   /**
@@ -93,59 +102,72 @@ Page({
   add() {
     const db = wx.cloud.database()
     const { todo } = this.data
-    const { description, type } = todo
+    const { description, type, done, progress, startDate, startTime } = todo
     if (!description) {
       $Message({
-          content: '请输入任务描述!',
-          type: 'warning'
+        content: '请输入事件描述!',
+        type: 'warning'
       });
       return false
     }
     if (!type) {
       $Message({
-          content: '请选择任务类型!',
-          type: 'warning'
+        content: '请选择事件类型!',
+        type: 'warning'
       });
       return false
     }
-    db.collection('todolist').add({
-      data: {
-        description,
-        startTime:  new Date("2018-09-01"),
-        endTime: new Date("2018-09-01"),
-        type,
-        progress: 0,
-        tags: [
-          "common",
-          "private"
-        ],
-        // 为待办事项添加一个地理位置（113°E，23°N）
-        location: new db.Geo.Point(113, 23),
-        done: false
-      },
-      success: res => {
-        // 在返回结果中会包含新创建的记录的 _id
-        wx.showToast({
-          title: '新增记录成功',
-        })
-        this.setData({
-          isEdit: false
-        })
-        console.log('[数据库] [新增记录] 成功，记录 _id: ', res)
-      },
-      fail: err => {
-        wx.showToast({
-          icon: 'none',
-          title: '新增记录失败'
-        })
-        console.error('[数据库] [新增记录] 失败：', err)
-      }
+    const data = {
+      description,
+      endTime: new Date(startDate + ' ' + startTime),
+      type,
+      progress,
+      tags: [
+        "common",
+        "private"
+      ],
+      // 为待办事项添加一个地理位置（113°E，23°N）
+      location: new db.Geo.Point(113, 23),
+      done
+    }
+    api.add(data, (res) => {
+      wx.showToast({
+        title: '新增记录成功',
+      })
+      this.setData({
+        isEdit: false
+      })
+      console.log('[数据库] [新增记录] 成功，记录 _id: ', res)
+    }, (err) => {
+      wx.showToast({
+        icon: 'none',
+        title: '新增记录失败'
+      })
+      console.error('[数据库] [新增记录] 失败：', err)
     })
   },
   toggleEdit() {
-    this.setData({
-      isEdit: !this.data.isEdit
-    })
+    const isEdit = !this.data.isEdit
+    if (isEdit) {
+      const { todo, resetTodo } = this.data
+      const date = util.formatTime(new Date(), 'yyyy-MM-dd HH:mm').split(' ')
+      const minStartDate = date[0]
+      const minStartTime = date[1]
+      this.setData({
+        minStartDate,
+        minStartTime,
+        isEdit,
+        todo: {
+          ...resetTodo,
+          startDate: minStartDate,
+          startTime: minStartTime,
+        }
+      })
+    } else {
+      this.setData({
+        isEdit
+      })
+    }
   },
   editDescription(e) {
     e = e.detail
@@ -157,12 +179,58 @@ Page({
       }
     })
   },
+  // 开始时间改变
+  timeChange(e) {
+    const { type } = e.currentTarget.dataset
+    const { todo } = this.data
+    todo[type] =  e.detail.value
+    this.setData({
+      todo
+    })
+  },
   // 改变任务类型
   changeTodoType(e) {
     const { todo } = this.data
     const { type } = e.currentTarget.dataset
     todo.type = type
     this.setData({
+      todo
+    })
+  },
+  // 进度条变化
+  progressChange(e) {
+    const { todo, progressUnit } = this.data
+    const { type } = e.currentTarget.dataset
+    if (type === 'add') {
+      if (todo.progress >= 100) {
+        return false
+      } else {
+        todo.progress += progressUnit
+      }
+    }
+    if (type === 'reduce') {
+      if (todo.progress <= 0) {
+        return false
+      } else {
+        todo.progress -= progressUnit
+      }
+    }
+    this.progressStatusChange(todo);
+  },
+  // 进度条样式变化
+  progressStatusChange(todo) {
+    let status = 'wrong'
+    let done = false
+    if (todo.progress > 50 && todo.progress < 99) {
+      status = 'normal'
+    }
+    if (todo.progress === 100) {
+      status = 'success'
+      done = true
+    }
+    todo.done = done
+    this.setData({
+      status,
       todo
     })
   }
