@@ -1,51 +1,89 @@
 /* pages/user/todolist/todolist.wxss */
+
 .todolist {
     min-height: 100%;
     background-color: #fff;
 }
+
 .demo-container {
-    width: 100vw;
+    width: 80vw;
     height: 100vh;
     background: #fff;
 }
+
 .edit-title {
     text-align: right;
     line-height: 1.5;
 }
+
 .edit-title text:last-child {
     color: #00C0EE;
     margin: 0 30rpx;
 }
+
+.title-des {
+    width: 300px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.title-important-critical {
+    color: #de6034;
+}
+
 .description.important-critical {
     background-color: #de6034;
 }
+
+.title-important-noCritical {
+    color: #fdcf64;
+}
+
 .description.important-noCritical {
     background-color: #fdcf64;
 }
+
+.title-noImportant-critical {
+    color: #9dd7fd;
+}
+
 .description.noImportant-critical {
     background-color: #9dd7fd;
 }
+
+.title-noImportant-noCritical {
+    color: #bfe390;
+}
+
 .description.noImportant-noCritical {
     background-color: #bfe390;
 }
+
 .todo-types {
     padding: 0 15px;
     box-sizing: border-box;
 }
+
 .todo-type-item {
     line-height: 60rpx;
     font-size: 24rpx;
     padding: 10rpx 0;
 }
+
 .todo-type-item.important-critical view {
     border-color: #de6034;
 }
+
 .todo-type-item.important-critical view.active::after {
     background-color: #de6034;
 }
+
 .todo-type-item.important-noCritical view {
     border-color: #fdcf64;
 }
+
 .todo-type-item.important-noCritical view.active::after {
     background-color: #fdcf64;
 }
@@ -53,18 +91,23 @@
 .todo-type-item.noImportant-critical view {
     border-color: #9dd7fd;
 }
+
 .todo-type-item.noImportant-critical view.active::after {
     background-color: #9dd7fd;
 }
+
 .todo-type-item.noImportant-noCritical view {
     border-color: #bfe390;
 }
+
 .todo-type-item.noImportant-noCritical view.active::after {
     background-color: #bfe390;
 }
-.todo-type-item + .todo-type-item {
+
+.todo-type-item+.todo-type-item {
     margin-left: 10rpx;
 }
+
 .todo-type-item view {
     display: inline-block;
     width: 32rpx;
@@ -77,6 +120,7 @@
     position: relative;
     box-sizing: border-box;
 }
+
 .todo-type-item view.active::after {
     content: '';
     position: absolute;
@@ -89,23 +133,61 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 .date-view {
     box-sizing: border-box;
     padding: 10px 15px;
 }
-.date-view > view {
+
+.date-view>view {
     padding: 0 10px;
 }
+
 .date-view .i-icon {
     margin-right: 10px;
 }
+
 .progress {
     padding: 12px 15px;
 }
+
 .progress .icon-jian {
     margin-right: 25px;
 }
+
 .progress-box {
     flex: 1;
     margin-top: -4px;
+}
+
+.todo-item {
+    padding: 0 10px;
+    box-sizing: border-box;
+    font-size: 24rpx;
+}
+
+.todo-item>view {
+    padding: 2px 0;
+}
+
+.todo-item .todo-time {
+    margin-left: 10px;
+}
+
+.todo-item .progress {
+    padding: 10px 0;
+}
+
+.todo-item .progress-box {
+    margin-top: -2px;
+}
+
+.todo-item-box {
+    position: relative;
+}
+
+.todo-item-box .todo-item-delete {
+    position: absolute;
+    right: 8px;
+    top: 4px;
 }

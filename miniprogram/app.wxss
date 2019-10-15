@@ -1,28 +1,29 @@
 /**app.wxss**/
+
 @import "./font/font.wxss";
 page {
   font-size: 28rpx;
   height: 100%;
 }
+
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-} 
+}
 
 button {
   background: initial;
 }
 
-button:focus{
+button:focus {
   outline: 0;
 }
 
-button::after{
+button::after {
   border: none;
 }
-
 
 page {
   background: #f6f6f6;
@@ -163,6 +164,7 @@ page {
 .public-padding {
   padding: 0 30rpx;
 }
+
 .flex {
   display: flex;
 }

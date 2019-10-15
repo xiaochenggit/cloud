@@ -6,7 +6,10 @@
     "i-panel": "../../../dist/panel/index",
     "i-message": "../../../dist/message/index",
     "i-button": "../../../dist/button/index",
-    "i-progress": "../../../dist/progress/index"
+    "i-progress": "../../../dist/progress/index",
+    "i-collapse": "../../../dist/collapse/index",
+    "i-collapse-item": "../../../dist/collapse-item/index",
+    "i-modal": "../../../dist/modal/index"
   },
   "navigationBarTitleText": "待办事项",
   "navigationBarBackgroundColor": "#FFFFFF"

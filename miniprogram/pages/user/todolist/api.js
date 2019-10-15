@@ -1,6 +1,7 @@
 const db = wx.cloud.database()
+const todolist = db.collection('todolist')
 const add = (data, successFun, failFun) => {
-  db.collection('todolist').add({
+  todolist.add({
     data,
     success: res => {
       // 在返回结果中会包含新创建的记录的 _id
@@ -10,7 +11,29 @@ const add = (data, successFun, failFun) => {
       failFun(err)
     }
   })
-}
+};
+const sreach = (data, successFun, failFun) => {
+  todolist.where(data).get({
+    success: function(res) {
+      successFun(res.data)
+    },
+    fail: err => {
+      failFun(err)
+    }
+  })
+};
+const deleteTodo = (id, successFun, failFun) => {
+  todolist.doc(id).remove({
+    success: function(res) {
+      successFun()
+    },
+    fail: err => {
+      failFun(err)
+    }
+  })
+};
 module.exports = {
-  add
+  add,
+  sreach,
+  deleteTodo
 }

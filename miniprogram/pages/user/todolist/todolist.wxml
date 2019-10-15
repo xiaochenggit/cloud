@@ -1,10 +1,40 @@
 <!-- pages/user/todolist/todolist.wxml -->
 <view class="todolist">
   <view class="create-todo">
-    <i-button wx:if='{{!isEdit}}' bind:click="toggleEdit" type="success">
+    <i-button bind:click="toggleEdit" type="success">
       <i-icon type="add" />
       新建待办
     </i-button>
+    <view class="todolist">
+      <i-collapse name="{{name}}">
+        <view class="todo-item-box" wx:for="{{todoList}}" wx:key="{{index}}">
+          <i-collapse-item i-class-title="{{'title-des title-' + item.type}}" title="{{item.description}}" name="{{index}}">
+            <view slot="content">
+              <view class="todo-item">
+                <view class="description">{{item.description}}</view>
+                <view class="progress flex">
+                  <view class="icon-jian iconfont" wx:if="{{!item.isOver}}" bind:tap="progressChange" data-type='reduce' data-todo='{{item}}' data-index="{{index}}"></view>
+                  <view class="progress-box">
+                    <i-progress percent="{{ item.progress }}" status="{{ item.status }}"></i-progress>
+                  </view>
+                  <view class="icon-jia iconfont" wx:if="{{!item.isOver}}" bind:tap="progressChange" data-type='add' data-todo='{{item}}' data-index="{{index}}"></view>
+                </view>
+                <view class="flex">
+                  <view style="margin-right:5px; vertical-align: top;margin-top:-2px">
+                    <i-icon type="time" size="16" />
+                  </view>
+                  {{item.endTime}}
+                  <view class="todo-time">{{item.isOver ? '已结束' : item.done ? '已完成' : '未完成'}}</view>
+                </view>
+              </view>
+            </view>
+          </i-collapse-item>
+          <view class='todo-item-delete' bind:tap="changeConfirmDelete" data-id='{{item._id}}' data-index="{{index}}">
+            <i-icon type="trash" size="16" />
+          </view>
+        </view>
+      </i-collapse>
+    </view>
     <i-drawer mode="right" visible="{{isEdit}}" bind:close="toggleEdit">
       <view class="demo-container">
         <i-panel title="事件描述：">
@@ -40,11 +70,11 @@
         </i-panel>
         <i-panel title="完成进度：">
           <view class="progress flex">
-            <view class="icon-jian iconfont" bind:tap="progressChange" data-type='reduce'></view>
+            <view class="icon-jian iconfont" bind:tap="progressChange" data-todo='{{todo}}' data-type='reduce'></view>
             <view class="progress-box">
-              <i-progress percent="{{ todo.progress }}" status="{{ status }}"></i-progress>
+              <i-progress percent="{{ todo.progress }}" status="{{ todo.status }}"></i-progress>
             </view>
-            <view class="icon-jia iconfont" bind:tap="progressChange" data-type='add'></view>
+            <view class="icon-jia iconfont" bind:tap="progressChange" data-todo='{{todo}}' data-type='add'></view>
           </view>
         </i-panel>
         <i-button bind:click="toggleEdit">取消</i-button>
@@ -52,5 +82,8 @@
       </view>
     </i-drawer>
   </view>
+  <i-modal visible="{{showConfirmDelete}}" bind:ok="deleteTodo" bind:cancel="changeConfirmDelete">
+    <view>{{deleteTodoTip}}</view>
+  </i-modal>
 </view>
 <i-message id="message" />

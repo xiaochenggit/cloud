@@ -1,7 +1,7 @@
 // pages/user/todolist/todolist.js
 const { $Message } = require('../../../dist/base/index');
 const util = require('../../../util/utils.js');
-const api = require ('./api.js');
+const api = require('./api.js');
 Page({
 
   /**
@@ -9,7 +9,10 @@ Page({
    */
   data: {
     isEdit: false,
+    name: 'name1',
     todo: {},
+    showConfirmDelete: false,
+    todoList: [],
     resetTodo: { // 任务默认属性
       description: '',  // 任务描述
       startDate: '',
@@ -24,6 +27,7 @@ Page({
       ],
       location: '',
       done: false,
+      status: 'wrong'
     },
     typeOptions: [{ // 任务类型配置
       name: '很重要-很紧急',
@@ -40,15 +44,17 @@ Page({
     }],
     minStartDate: '2019-01-01', // 最小日期限制
     minStartTime: '00:00', // 最小时间限制
-    status: 'wrong', // 进度条初始化状态
-    progressUnit: 10 // 进度条每次变化值
+    progressUnit: 10, // 进度条每次变化值
+    deleteTodoId: -1,
+    deleteTodoIndex: -1,
+    deleteTodoTip: '确认删除此事件吗?'
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
+    this.sreachList()
   },
 
   /**
@@ -102,7 +108,9 @@ Page({
   add() {
     const db = wx.cloud.database()
     const { todo } = this.data
-    const { description, type, done, progress, startDate, startTime } = todo
+    const { description, type, done, progress, startTime } = todo
+    let startDate = todo.startDate
+    startDate = startDate.replace(/-/g, '/')
     if (!description) {
       $Message({
         content: '请输入事件描述!',
@@ -137,6 +145,7 @@ Page({
       this.setData({
         isEdit: false
       })
+      this.sreachList()
       console.log('[数据库] [新增记录] 成功，记录 _id: ', res)
     }, (err) => {
       wx.showToast({
@@ -149,7 +158,7 @@ Page({
   toggleEdit() {
     const isEdit = !this.data.isEdit
     if (isEdit) {
-      const { todo, resetTodo } = this.data
+      const { resetTodo } = this.data
       const date = util.formatTime(new Date(), 'yyyy-MM-dd HH:mm').split(' ')
       const minStartDate = date[0]
       const minStartTime = date[1]
@@ -159,6 +168,7 @@ Page({
         isEdit,
         todo: {
           ...resetTodo,
+          status: 'wrong',
           startDate: minStartDate,
           startTime: minStartTime,
         }
@@ -183,7 +193,7 @@ Page({
   timeChange(e) {
     const { type } = e.currentTarget.dataset
     const { todo } = this.data
-    todo[type] =  e.detail.value
+    todo[type] = e.detail.value
     this.setData({
       todo
     })
@@ -199,8 +209,8 @@ Page({
   },
   // 进度条变化
   progressChange(e) {
-    const { todo, progressUnit } = this.data
-    const { type } = e.currentTarget.dataset
+    const { progressUnit, todoList } = this.data
+    const { todo, type, index } = e.currentTarget.dataset
     if (type === 'add') {
       if (todo.progress >= 100) {
         return false
@@ -215,23 +225,78 @@ Page({
         todo.progress -= progressUnit
       }
     }
-    this.progressStatusChange(todo);
+    todo.done = todo.progress >= 100
+    todo.status = this.getStaus(todo.progress)
+    if (index === undefined) {
+      this.setData({
+        todo
+      })
+    } else {
+      todoList[index] = todo
+      this.setData({
+        todoList
+      })
+    }
   },
-  // 进度条样式变化
-  progressStatusChange(todo) {
+  getStaus(progress) {
     let status = 'wrong'
-    let done = false
-    if (todo.progress > 50 && todo.progress < 99) {
+    if (progress > 50 && progress < 99) {
       status = 'normal'
     }
-    if (todo.progress === 100) {
+    if (progress === 100) {
       status = 'success'
-      done = true
     }
-    todo.done = done
+    return status
+  },
+  // 查询列表
+  sreachList() {
+    api.sreach({
+      "_openid": "owedY5Jm_lJkt0s64NarrATdmJ0g"
+    }, (res) => {
+      res.forEach(item => {
+        item.endTime = util.formatTime(item.endTime, 'yyyy-MM-dd HH:mm')
+        item.isOver = new Date().getTime() > new Date(item.endTime).getTime()
+        item.status = this.getStaus(item.progress)
+      })
+      this.setData({
+        todoList: res
+      })
+    })
+  },
+  // 删除
+  deleteTodo(e) {
+    const db = wx.cloud.database()
+    const { todoList, deleteTodoId, deleteTodoIndex } = this.data
+    if (deleteTodoId === -1) {
+      return false
+    }
+    api.deleteTodo(deleteTodoId, () => {
+      $Message({
+        content: '删除事件成功!'
+      })
+      todoList.splice(deleteTodoIndex, 1)
+      this.setData({
+        todoList,
+        showConfirmDelete: false
+      })
+    }, (err) => {
+      console.log(err)
+    })
+  },
+  // 删除提示
+  changeConfirmDelete(e) {
+    const showConfirmDelete = !this.data.showConfirmDelete
+    let deleteTodoId = -1
+    let deleteTodoIndex = -1
+    if (showConfirmDelete) {
+      const { id, index } = e.currentTarget.dataset
+      deleteTodoId = id
+      deleteTodoIndex = index
+    }
     this.setData({
-      status,
-      todo
+      showConfirmDelete,
+      deleteTodoId,
+      deleteTodoIndex
     })
   }
 })
