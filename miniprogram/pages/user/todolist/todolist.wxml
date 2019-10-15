@@ -5,35 +5,46 @@
       <i-icon type="add" />
       新建待办
     </i-button>
-    <view class="todolist">
-      <i-collapse name="{{name}}">
-        <view class="todo-item-box" wx:for="{{todoList}}" wx:key="{{index}}">
-          <i-collapse-item i-class-title="{{'title-des title-' + item.type}}" title="{{item.description}}" name="{{index}}">
-            <view slot="content">
-              <view class="todo-item">
-                <view class="description">{{item.description}}</view>
-                <view class="progress flex">
-                  <view class="icon-jian iconfont" wx:if="{{!item.isOver}}" bind:tap="progressChange" data-type='reduce' data-todo='{{item}}' data-index="{{index}}"></view>
-                  <view class="progress-box">
-                    <i-progress percent="{{ item.progress }}" status="{{ item.status }}"></i-progress>
+    <view class="no-todolist" wx:if="{{!filterList.length}}">
+      <i-load-more tip="暂无待办事件" loading="{{ false }}" />
+    </view>
+    <view class="i-sticky-demo" wx:else="{{filterList.length}}">
+      <i-sticky scrollTop="{{scrollTop}}">
+        <i-sticky-item i-class="i-sticky-demo-title" wx:for="{{filterList}}" wx:for-item="list" wx:for-index="idx" wx:key="{{idx}}">
+          <view slot="title">{{list.date}}</view>
+          <view slot="content">
+            <view class="todo-item-box" wx:for="{{list.list}}" wx:key="{{index}}">
+              <i-collapse-item i-class-title="{{'title-des title-' + item.type}}" title="{{item.description}}" name="{{index}}">
+                <view slot="content">
+                  <view class="todo-item">
+                    <view class="description">{{item.description}}</view>
+                    <view class="progress flex">
+                      <view class="icon-jian iconfont" wx:if="{{!item.isOver}}" bind:tap="progressChange" data-type='reduce' data-idx="{{idx}}" data-todo='{{item}}' data-index="{{index}}"></view>
+                      <view class="progress-box">
+                        <i-progress percent="{{ item.progress }}" status="{{ item.status }}"></i-progress>
+                      </view>
+                      <view class="icon-jia iconfont" wx:if="{{!item.isOver}}" bind:tap="progressChange" data-type='add'  data-idx="{{idx}}" data-todo='{{item}}' data-index="{{index}}"></view>
+                    </view>
+                    <view class="flex">
+                      <view style="margin-right:5px; vertical-align: top;margin-top:-2px">
+                        <i-icon type="time" size="16" />
+                      </view>
+                      {{item.endTime}}
+                      <view class="todo-time">
+                        {{item.isOver ? '已结束' : item.done ? '已完成' : '未完成'}}
+                      </view>
+                    </view>
                   </view>
-                  <view class="icon-jia iconfont" wx:if="{{!item.isOver}}" bind:tap="progressChange" data-type='add' data-todo='{{item}}' data-index="{{index}}"></view>
                 </view>
-                <view class="flex">
-                  <view style="margin-right:5px; vertical-align: top;margin-top:-2px">
-                    <i-icon type="time" size="16" />
-                  </view>
-                  {{item.endTime}}
-                  <view class="todo-time">{{item.isOver ? '已结束' : item.done ? '已完成' : '未完成'}}</view>
-                </view>
+              </i-collapse-item>
+              <view class='todo-item-delete' bind:tap="changeConfirmDelete" data-idx="{{idx}}" data-id='{{item._id}}' data-index="{{index}}">
+                <i-icon type="trash" size="16" />
               </view>
             </view>
-          </i-collapse-item>
-          <view class='todo-item-delete' bind:tap="changeConfirmDelete" data-id='{{item._id}}' data-index="{{index}}">
-            <i-icon type="trash" size="16" />
+            <!-- <view class="i-sticky-demo-item" wx:for="{{item.list}}" wx:for-item="todo">注册程序</view> -->
           </view>
-        </view>
-      </i-collapse>
+        </i-sticky-item>
+      </i-sticky>
     </view>
     <i-drawer mode="right" visible="{{isEdit}}" bind:close="toggleEdit">
       <view class="demo-container">

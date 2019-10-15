@@ -47,7 +47,9 @@ Page({
     progressUnit: 10, // 进度条每次变化值
     deleteTodoId: -1,
     deleteTodoIndex: -1,
-    deleteTodoTip: '确认删除此事件吗?'
+    deleteTodoIdx: -1,
+    deleteTodoTip: '确认删除此事件吗?',
+    scrollTop: 0
   },
 
   /**
@@ -209,8 +211,8 @@ Page({
   },
   // 进度条变化
   progressChange(e) {
-    const { progressUnit, todoList } = this.data
-    const { todo, type, index } = e.currentTarget.dataset
+    const { progressUnit, filterList } = this.data
+    const { todo, type, index, idx } = e.currentTarget.dataset
     if (type === 'add') {
       if (todo.progress >= 100) {
         return false
@@ -232,9 +234,9 @@ Page({
         todo
       })
     } else {
-      todoList[index] = todo
+      filterList[idx].list[index] = todo
       this.setData({
-        todoList
+        filterList
       })
     }
   },
@@ -255,18 +257,44 @@ Page({
     }, (res) => {
       res.forEach(item => {
         item.endTime = util.formatTime(item.endTime, 'yyyy-MM-dd HH:mm')
+        item.date = item.endTime.split(' ')[0]
         item.isOver = new Date().getTime() > new Date(item.endTime).getTime()
         item.status = this.getStaus(item.progress)
       })
+      const filterList = this.filterList(res)
       this.setData({
-        todoList: res
+        todoList: res,
+        filterList,
+        showConfirmDelete: false
       })
     })
+  },
+  filterList(list) {
+    const filterList = [];
+    list.forEach(item => {
+      const date = item.date
+      let isHas = false
+      filterList.forEach(element => {
+        if (element.date === date) {
+          element.list.push(item)
+          isHas = true
+        }
+      });
+      if (!isHas) {
+        var obj = {
+          date: date,
+          list: []
+        }
+        obj.list.push(item)
+        filterList.push(obj)
+      }
+    })
+    return filterList
   },
   // 删除
   deleteTodo(e) {
     const db = wx.cloud.database()
-    const { todoList, deleteTodoId, deleteTodoIndex } = this.data
+    const { deleteTodoId, filterList, deleteTodoIdx, deleteTodoIndex } = this.data
     if (deleteTodoId === -1) {
       return false
     }
@@ -274,9 +302,13 @@ Page({
       $Message({
         content: '删除事件成功!'
       })
-      todoList.splice(deleteTodoIndex, 1)
+      filterList[deleteTodoIdx].list.splice(deleteTodoIndex, 1)
+      // 如果删除本日期最后一个
+      if (filterList[deleteTodoIdx].list.length === 0) {
+        filterList.splice(deleteTodoIdx, 1)
+      }
       this.setData({
-        todoList,
+        filterList,
         showConfirmDelete: false
       })
     }, (err) => {
@@ -288,15 +320,23 @@ Page({
     const showConfirmDelete = !this.data.showConfirmDelete
     let deleteTodoId = -1
     let deleteTodoIndex = -1
+    let deleteTodoIdx = -1
     if (showConfirmDelete) {
-      const { id, index } = e.currentTarget.dataset
+      const { id, index, idx } = e.currentTarget.dataset
       deleteTodoId = id
       deleteTodoIndex = index
+      deleteTodoIdx = idx
     }
     this.setData({
       showConfirmDelete,
       deleteTodoId,
-      deleteTodoIndex
+      deleteTodoIndex,
+      deleteTodoIdx
+    })
+  },
+  onPageScroll(event) {
+    this.setData({
+      scrollTop: event.scrollTop
     })
   }
 })

@@ -2,7 +2,7 @@
 
 .todolist {
     min-height: 100%;
-    background-color: #fff;
+    background-color: #f9f9f9;
 }
 
 .demo-container {
@@ -27,6 +27,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    padding: 5px 0;
 }
 
 .title-important-critical {
@@ -189,5 +190,17 @@
 .todo-item-box .todo-item-delete {
     position: absolute;
     right: 8px;
-    top: 4px;
+    top: 9px;
+}
+.no-todolist {
+    padding-top: 100px;
+}
+.i-sticky-demo{
+    width:100%;
+    height:100%;
+}
+.i-sticky-demo-item{
+    padding:10px;
+    border-bottom:#ddd solid 1rpx;
+    font-size:14px;
 }

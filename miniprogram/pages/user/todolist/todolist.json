@@ -9,7 +9,10 @@
     "i-progress": "../../../dist/progress/index",
     "i-collapse": "../../../dist/collapse/index",
     "i-collapse-item": "../../../dist/collapse-item/index",
-    "i-modal": "../../../dist/modal/index"
+    "i-modal": "../../../dist/modal/index",
+    "i-load-more": "../../../dist/load-more/index",
+    "i-sticky": "../../../dist/sticky/index",
+    "i-sticky-item": "../../../dist/sticky-item/index"
   },
   "navigationBarTitleText": "待办事项",
   "navigationBarBackgroundColor": "#FFFFFF"
