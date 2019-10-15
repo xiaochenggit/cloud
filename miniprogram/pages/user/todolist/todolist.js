@@ -234,9 +234,14 @@ Page({
         todo
       })
     } else {
-      filterList[idx].list[index] = todo
-      this.setData({
-        filterList
+      api.update(todo._id, {
+        progress: todo.progress,
+        done: todo.done
+      }, () => {
+        filterList[idx].list[index] = todo
+        this.setData({
+          filterList
+        })
       })
     }
   },

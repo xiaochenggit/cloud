@@ -32,8 +32,20 @@ const deleteTodo = (id, successFun, failFun) => {
     }
   })
 };
+const update = (id, data, successFun, failFun) => {
+  todolist.doc(id).update({
+    data,
+    success: function(res) {
+      successFun()
+    },
+    fail: err => {
+      failFun(err)
+    }
+  })
+};
 module.exports = {
   add,
   sreach,
-  deleteTodo
+  deleteTodo,
+  update
 }
