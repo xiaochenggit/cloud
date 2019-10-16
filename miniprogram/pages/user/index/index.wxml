@@ -1,28 +1,16 @@
 <!-- pages/user/index/index.wxml -->
 <view class="user">
   <view class="user-avatar">
-    <view class="user-login" wx:if="{{!avatarUrl}}">
+    <view class="user-login" wx:if="{{!avatarUrl && !userInfo.nickName}}">
       <i-button bind:getuserinfo="onGetUserInfo" open-type="getUserInfo">登录</i-button>
     </view>
     <view wx:else class="user-avatar-box">
-      <i-avatar src="{{avatarUrl}}" shape="circle" size="jularge"></i-avatar>
+      <i-avatar src="{{avatarUrl ? avatarUrl : '../../user-unlogin.png'}}" shape="circle" size="jularge"></i-avatar>
       <view class="user-name">{{userInfo.nickName}}</view>
     </view>
   </view>
   <view>
     <i-grid>
-      <i-grid-item bindtap="linkTo" data-url="/pages/user/todolist/todolist">
-        <i-grid-icon>
-          <i-icon type="activity_fill" size="30" />
-        </i-grid-icon>
-        <i-grid-label>待办事项</i-grid-label>
-      </i-grid-item>
-      <i-grid-item bindtap="linkTo" data-url="/pages/user/todolist/todolist">
-        <i-grid-icon>
-          <i-icon type="activity_fill" size="30" />
-        </i-grid-icon>
-        <i-grid-label>待办事项</i-grid-label>
-      </i-grid-item>
       <i-grid-item bindtap="linkTo" data-url="/pages/user/todolist/todolist">
         <i-grid-icon>
           <i-icon type="activity_fill" size="30" />

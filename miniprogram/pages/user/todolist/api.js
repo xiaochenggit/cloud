@@ -13,7 +13,7 @@ const add = (data, successFun, failFun) => {
   })
 };
 const sreach = (data, successFun, failFun) => {
-  todolist.where(data).get({
+  todolist.orderBy('endTime', 'asc').get({
     success: function(res) {
       successFun(res.data)
     },

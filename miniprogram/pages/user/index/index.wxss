@@ -1,5 +1,8 @@
 /* pages/user/index/index.wxss */
-
+.user {
+  min-height: 100%;
+  background-color: #fff;
+}
 .user-avatar-box {
     text-align: center;
     line-height: 60rpx;
